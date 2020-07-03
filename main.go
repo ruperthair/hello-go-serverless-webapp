@@ -15,17 +15,17 @@ var (
 )
 
 func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Printf("Body size = %d. \n", len(request.Body))
-	fmt.Println("Headers:")
+	s1 := fmt.Sprintf("Body size = %d. \n", len(request.Body))
+	s1 += fmt.Sprintf("Headers:\n")
 	for key, value := range request.Headers {
-		fmt.Printf("  %s: %s\n", key, value)
+		s1 += fmt.Sprintf("  %s: %s\n", key, value)
 	}
 	if request.HTTPMethod == "GET" {
-		fmt.Printf("GET METHOD\n")
-		return events.APIGatewayProxyResponse{Body: "GET", StatusCode: 200}, nil
+		s1 += fmt.Sprintf("\nGET METHOD\n")
+		return events.APIGatewayProxyResponse{Body: s1, StatusCode: 200}, nil
 	} else if request.HTTPMethod == "POST" {
-		fmt.Printf("POST METHOD\n")
-		return events.APIGatewayProxyResponse{Body: "POST", StatusCode: 200}, nil
+		s1 += fmt.Sprintf("\nPOST METHOD\n")
+		return events.APIGatewayProxyResponse{Body: s1, StatusCode: 200}, nil
 	} else {
 		fmt.Printf("NEITHER\n")
 		return events.APIGatewayProxyResponse{}, HTTPMethodNotSupported
