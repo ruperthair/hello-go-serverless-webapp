@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -10,26 +9,15 @@ import (
 )
 
 var (
-	// ErrNameNotProvided is thrown when a name is not provided
-	HTTPMethodNotSupported = errors.New("no name was provided in the HTTP body")
+	head = map[string]string{"Content-Type": "text/plain"}
 )
 
 func HandleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	s1 := fmt.Sprintf("Body size = %d. \n", len(request.Body))
-	s1 += fmt.Sprintf("Headers:\n")
+	s1 := fmt.Sprintf("Method = %s\nBody size = %d\nHeaders:\n", request.HTTPMethod, len(request.Body))
 	for key, value := range request.Headers {
 		s1 += fmt.Sprintf("  %s: %s\n", key, value)
 	}
-	if request.HTTPMethod == "GET" {
-		s1 += fmt.Sprintf("\nGET METHOD\n")
-		return events.APIGatewayProxyResponse{Body: s1, StatusCode: 200}, nil
-	} else if request.HTTPMethod == "POST" {
-		s1 += fmt.Sprintf("\nPOST METHOD\n")
-		return events.APIGatewayProxyResponse{Body: s1, StatusCode: 200}, nil
-	} else {
-		fmt.Printf("NEITHER\n")
-		return events.APIGatewayProxyResponse{}, HTTPMethodNotSupported
-	}
+	return events.APIGatewayProxyResponse{Body: s1, StatusCode: 200, Headers: head}, nil
 }
 
 func main() {
